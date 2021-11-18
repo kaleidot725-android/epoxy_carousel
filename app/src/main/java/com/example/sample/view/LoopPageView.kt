@@ -9,6 +9,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sample.R
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.math.atan
 
 class LoopPageView(
     context: Context,
@@ -24,7 +25,10 @@ class LoopPageView(
     init {
         View.inflate(context, R.layout.layout_loop_view, this)
         viewPager2 = findViewById(R.id.view_pager)
+        viewPager2.isSaveEnabled = false
+
         hiddenViewPager2 = findViewById(R.id.hidden_view_pager)
+        hiddenViewPager2.isSaveEnabled = false
     }
 
     fun setupData(
@@ -34,19 +38,18 @@ class LoopPageView(
         onChangedPosition: (position: Int) -> Unit
     ) {
         this.items = items
-        setupViewPager2(fragment, onCreateFragment)
-        setupHiddenViewPager2(fragment, onChangedPosition)
+        setupViewPager2AndHiddenViewPager2(fragment, onCreateFragment, onChangedPosition)
     }
 
     fun clearData() {
-        clearViewPager2()
-        clearHiddenViewPager2()
+        this.items = emptyList()
+        clearViewPager2AndHiddenViewPager2()
     }
 
     fun attachIndicatorView(indicatorView: LoopPageIndicatorView) {
         indicatorView.nextButton.setOnClickListener { next() }
         indicatorView.backButton.setOnClickListener { back() }
-        TabLayoutMediator(indicatorView.tabLayout, hiddenViewPager2) { _, _ -> }.attach()
+        TabLayoutMediator(indicatorView.tabLayout, hiddenViewPager2) { _, _ -> }.apply { attach() }
     }
 
     fun next() {
@@ -58,18 +61,18 @@ class LoopPageView(
     }
 
     fun setPosition(position: Int, smoothScroll: Boolean) {
-        viewPager2.setCurrentItem(position, smoothScroll)
+        viewPager2.setCurrentItem(position + 1, smoothScroll)
     }
 
-    private fun setupViewPager2(fragment: Fragment, onCreateFragment: (position: Int) -> Fragment) {
+    private fun setupViewPager2AndHiddenViewPager2(
+        fragment: Fragment,
+        onCreateFragment: (position: Int) -> Fragment,
+        onChangedPosition: (position: Int) -> Unit
+    ) {
         viewPager2.adapter = object : FragmentStateAdapter(fragment) {
             override fun getItemCount(): Int {
                 val itemCount = items.count()
-                return if (itemCount > 1) {
-                    itemCount + 2
-                } else {
-                    itemCount
-                }
+                return if (itemCount > 1) itemCount + 2 else itemCount
             }
 
             override fun createFragment(position: Int): Fragment {
@@ -81,7 +84,6 @@ class LoopPageView(
 
         scrollChangeCallback = object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     val currentPosition = viewPager2.currentItem
                     if (currentPosition < 1) {
@@ -98,15 +100,6 @@ class LoopPageView(
         }
         viewPager2.registerOnPageChangeCallback(scrollChangeCallback!!)
 
-        viewPager2.setCurrentItem( 1, false)
-    }
-
-    private fun clearViewPager2() {
-        viewPager2.adapter = null
-        scrollChangeCallback?.let { this.viewPager2.unregisterOnPageChangeCallback(it) }
-    }
-
-    private fun setupHiddenViewPager2(fragment: Fragment, onChangedPosition: (position: Int) -> Unit) {
         hiddenViewPager2.adapter = object : FragmentStateAdapter(fragment) {
             override fun getItemCount(): Int {
                 return items.count()
@@ -124,9 +117,14 @@ class LoopPageView(
             }
         }
         hiddenViewPager2.registerOnPageChangeCallback(positionChangeCallback!!)
+
+        viewPager2.setCurrentItem(1, false)
     }
 
-    private fun clearHiddenViewPager2() {
+    private fun clearViewPager2AndHiddenViewPager2() {
+        viewPager2.adapter = null
+        scrollChangeCallback?.let { this.viewPager2.unregisterOnPageChangeCallback(it) }
+
         hiddenViewPager2.adapter = null
         positionChangeCallback?.let { this.viewPager2.unregisterOnPageChangeCallback(it) }
     }
