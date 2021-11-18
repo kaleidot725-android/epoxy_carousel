@@ -2,43 +2,29 @@ package com.example.sample
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.viewpager2.widget.ViewPager2
-import com.example.sample.controller.LoopViewPagerController
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.sample.view.LoopPageIndicatorView
+import com.example.sample.view.LoopPageView
 
 class ViewPagerFragment : Fragment(R.layout.fragment_view_pager) {
-    private lateinit var controller : LoopViewPagerController
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewPager = view.findViewById<ViewPager2>(R.id.view_pager)
-        val hiddenViewPager = view.findViewById<ViewPager2>(R.id.hidden_view_pager)
-        controller = LoopViewPagerController(
+
+        val loopPageView = view.findViewById<LoopPageView>(R.id.loop_page_view)
+        val loopPageIndicatorView = view.findViewById<LoopPageIndicatorView>(
+            R.id.loop_page_indicator_view
+        )
+
+        loopPageView.clearData()
+        loopPageView.setupData(
+            items = listOf("A", "B", "C", "D", "E", "F", "G"),
             fragment = this,
-            viewPager2 = viewPager,
-            hiddenViewPager2 = hiddenViewPager,
-            onCreateFragment = { position ->  ViewPagerItemFragment.create(position) },
-            onChangedPosition = { position -> /** Position Changed */ }
+            onCreateFragment = { position -> ViewPagerItemFragment.create(position) },
+            onChangedPosition = { position ->
+                Toast.makeText(context, "No ${position}", Toast.LENGTH_SHORT).show()
+            }
         )
-
-        controller.setData(
-            listOf("A", "B", "C", "D", "E", "F", "G")
-        )
-
-        val nextButton = view.findViewById<ImageButton>(R.id.next_button)
-        nextButton.setOnClickListener {
-            controller.next()
-        }
-
-        val backButton = view.findViewById<ImageButton>(R.id.back_button)
-        backButton.setOnClickListener {
-            controller.back()
-        }
-
-        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
-        TabLayoutMediator(tabLayout, hiddenViewPager) { _, _ -> }.attach()
+        loopPageView.attachIndicatorView(indicatorView = loopPageIndicatorView)
     }
 }

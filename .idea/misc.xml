@@ -11,6 +11,8 @@
         <entry key="app/src/main/res/layout/fragment_text.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_view_pager.xml" value="0.5238095238095238" />
         <entry key="app/src/main/res/layout/fragment_view_pager_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/layout_indicator_view.xml" value="0.5625" />
+        <entry key="app/src/main/res/layout/layout_loop_view.xml" value="0.5625" />
       </map>
     </option>
   </component>
