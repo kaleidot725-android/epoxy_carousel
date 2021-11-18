@@ -26,5 +26,6 @@ class ViewPagerFragment : Fragment(R.layout.fragment_view_pager) {
             }
         )
         loopPageView.attachIndicatorView(indicatorView = loopPageIndicatorView)
+        loopPageView.setPosition(5, false)
     }
 }

@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sample.R
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LoopPageView(
@@ -58,8 +57,8 @@ class LoopPageView(
         viewPager2.currentItem -= 1
     }
 
-    fun setPosition(position: Int) {
-        viewPager2.currentItem = position
+    fun setPosition(position: Int, smoothScroll: Boolean) {
+        viewPager2.setCurrentItem(position, smoothScroll)
     }
 
     private fun setupViewPager2(fragment: Fragment, onCreateFragment: (position: Int) -> Fragment) {
@@ -75,8 +74,8 @@ class LoopPageView(
 
             override fun createFragment(position: Int): Fragment {
                 val itemCount = items.count()
-                val newPosition = (position + (itemCount - 1)) % itemCount
-                return onCreateFragment(newPosition)
+                val loopPosition = (position + (itemCount - 1)) % itemCount
+                return onCreateFragment(loopPosition)
             }
         }
 
@@ -90,13 +89,16 @@ class LoopPageView(
                     } else if (currentPosition > items.count()) {
                         viewPager2.setCurrentItem(1, false)
                     }
-                    hiddenViewPager2.currentItem = viewPager2.currentItem - 1
                 }
+            }
+
+            override fun onPageSelected(position: Int) {
+                hiddenViewPager2.currentItem = position - 1
             }
         }
         viewPager2.registerOnPageChangeCallback(scrollChangeCallback!!)
 
-        viewPager2.setCurrentItem(1, false)
+        viewPager2.setCurrentItem( 1, false)
     }
 
     private fun clearViewPager2() {
