@@ -9,7 +9,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sample.R
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlin.math.atan
 
 class LoopPageView(
     context: Context,

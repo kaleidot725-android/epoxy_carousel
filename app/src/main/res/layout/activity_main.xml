@@ -10,5 +10,5 @@
         android:id="@+id/view_pager_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.example.sample.ViewPagerFragment"/>
+        android:name="com.example.sample.fragment.LoopPageFragment"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,13 @@
-package com.example.sample
+package com.example.sample.fragment.item
 
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.example.sample.R
 
-class ViewPagerItemFragment : Fragment(R.layout.fragment_view_pager_item) {
+class SmallNumberItemFragment : Fragment(R.layout.fragment_small_number_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -17,7 +18,7 @@ class ViewPagerItemFragment : Fragment(R.layout.fragment_view_pager_item) {
 
     companion object {
         fun create(position: Int): Fragment {
-            return ViewPagerItemFragment().apply {
+            return SmallNumberItemFragment().apply {
                 arguments = bundleOf("position" to position)
             }
         }
